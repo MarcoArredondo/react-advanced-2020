@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { data } from "../../../data";
 // more components
 // fix - context api, redux (for more complex cases)
 
-const PropDrilling = () => {
+//With this we have acces to two components the provider and the consumer
+const PersonContext = React.createContext();
+
+const ContextAPI = () => {
   const [people, setPeople] = useState(data);
   const removePerson = (id) => {
     setPeople((people) => {
@@ -11,15 +14,18 @@ const PropDrilling = () => {
     });
   };
   return (
-    <section>
-      <h3>Prop Drilling</h3>
-      <List people={people} removePerson={removePerson} />
-    </section>
+    //The provider needs to wrap the whole component tree
+    <PersonContext.Provider value={{removePerson, people}}>
+      <h3>Context API - UseContect()</h3>
+      <List people={people} />
+    </PersonContext.Provider>
+>
   );
 };
 
-const List = (props) => {
-  const { people, removePerson } = props;
+const List = () => {
+  //We are receiving the people object from the context passed as parameter in the provider
+  const {people} = useContext(PersonContext);
   return (
     <>
       {people.map((person) => {
@@ -27,7 +33,7 @@ const List = (props) => {
           <SinglePerson
             key={person.id}
             {...person}
-            removePerson={removePerson}
+      
           />
         );
       })}
@@ -35,7 +41,9 @@ const List = (props) => {
   );
 };
 
-const SinglePerson = ({ id, name, removePerson }) => {
+const SinglePerson = ({ id, name }) => {
+  //We are looking for the context we created
+  const removePerson = useContext(PersonContext);
   return (
     <div className="item">
       <h4>{name}</h4>
@@ -46,4 +54,4 @@ const SinglePerson = ({ id, name, removePerson }) => {
   );
 };
 
-export default PropDrilling;
+export default ContextAPI;
