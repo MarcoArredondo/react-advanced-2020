@@ -15,15 +15,23 @@ const ReactRouterSetup = () => {
   //Normally we wrap whole application inside the Router, in this case we have a separate file
   return (
     <Router>
-      <Route exact path="/">
-        <Home />
-      </Route>
-      <Route path="/about">
-        <About />
-      </Route>
-      <Route path="/people">
-        <People />
-      </Route>
+      <Navbar />
+      <Switch>
+        <Route exact path="/">
+          <Home />
+        </Route>
+        <Route path="/about">
+          <About />
+        </Route>
+        <Route path="/people">
+          <People />
+        </Route>
+        {/*Adding URL parameters*/}
+        <Route path="/person/:id" children={<Person />}></Route>
+        <Route path="*">
+          <Error />
+        </Route>
+      </Switch>
     </Router>
   );
 };
